@@ -1,12 +1,33 @@
-package com.hzflk.mime4j;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.tika.mime;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.w3c.dom.Document;
+
+/**
+ * Creates instances of MimeTypes.
+ */
 public class MimeTypesFactory {
 
     /**
@@ -16,6 +37,17 @@ public class MimeTypesFactory {
      */
     public static MimeTypes create() {
         return new MimeTypes();
+    }
+
+    /**
+     * Creates and returns a MimeTypes instance from the specified document.
+     * @throws MimeTypeException if the type configuration is invalid
+     */
+    public static MimeTypes create(Document document) throws MimeTypeException {
+        MimeTypes mimeTypes = new MimeTypes();
+        new MimeTypesReader(mimeTypes).read(document);
+        mimeTypes.init();
+        return mimeTypes;
     }
 
     /**
@@ -128,7 +160,7 @@ public class MimeTypesFactory {
         // Get the core URL, and all the extensions URLs
         URL coreURL = classLoader.getResource(classPrefix+coreFilePath);
         List<URL> extensionURLs = Collections.list(
-                classLoader.getResources(classPrefix + extensionFilePath));
+                classLoader.getResources(classPrefix+extensionFilePath));
 
         // Swap that into an Array, and process
         List<URL> urls = new ArrayList<URL>();

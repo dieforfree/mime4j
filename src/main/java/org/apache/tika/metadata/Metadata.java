@@ -1,4 +1,4 @@
-package com.hzflk.mime4j;
+package org.apache.tika.metadata;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -7,12 +7,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Metadata implements HttpHeaders, Serializable {
+public class Metadata implements Serializable {
 
     /** Serial version UID */
     private static final long serialVersionUID = 5623926545693153182L;
 
     public static final String RESOURCE_NAME_KEY = "resourceName";
+    public static final String CONTENT_TYPE = "Content-Type";
 
     /**
      * A map of all metadata attributes.

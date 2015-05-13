@@ -1,4 +1,20 @@
-package com.hzflk.mime4j;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.tika.detect;
 
 import java.io.CharArrayWriter;
 import java.io.IOException;
@@ -9,7 +25,20 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.tika.io.IOUtils;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
 
+/**
+ * Content type detection based on magic bytes, i.e. type-specific patterns
+ * near the beginning of the document input stream.
+ *
+ * Because this works on bytes, not characters, by default any string
+ *  matching is done as ISO_8859_1. To use an explicit different
+ *  encoding, supply a type other than "string" / "stringignorecase"
+ *
+ * @since Apache Tika 0.3
+ */
 public class MagicDetector implements Detector {
 
     private static final Charset ISO_8859_1 = Charset.forName("ISO-8859-1");
@@ -69,7 +98,7 @@ public class MagicDetector implements Detector {
         } else if (type.equals("stringignorecase")) {
             decoded = decodeString(value.toLowerCase(Locale.ROOT), type);
         } else if (type.equals("byte")) {
-            decoded = tmpVal.getBytes(Charset.forName("UTF-8"));
+            decoded = tmpVal.getBytes(IOUtils.UTF_8);
         } else if (type.equals("host16") || type.equals("little16")) {
             int i = Integer.parseInt(tmpVal, radix);
             decoded = new byte[] { (byte) (i & 0x00FF), (byte) (i >> 8) };
@@ -365,7 +394,7 @@ public class MagicDetector implements Detector {
                     flags = Pattern.CASE_INSENSITIVE;
                 }
                 
-                Pattern p = Pattern.compile(new String(this.pattern, Charset.forName("UTF-8")), flags);
+                Pattern p = Pattern.compile(new String(this.pattern, IOUtils.UTF_8), flags);
 
                 ByteBuffer bb = ByteBuffer.wrap(buffer);
                 CharBuffer result = ISO_8859_1.decode(bb);
