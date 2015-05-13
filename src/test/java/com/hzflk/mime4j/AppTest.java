@@ -1,4 +1,4 @@
-package com.hzflk;
+package com.hzflk.mime4j;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
